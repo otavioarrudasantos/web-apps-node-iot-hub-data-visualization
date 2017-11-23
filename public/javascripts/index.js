@@ -1,31 +1,31 @@
 $(document).ready(function () {
   var timeData = [],
-    temperatureData = [],
-    humidityData = [];
+    accelerometerData = [],
+    gyroscopeData = [];
   var data = {
     labels: timeData,
     datasets: [
       {
         fill: false,
-        label: 'Temperature',
-        yAxisID: 'Temperature',
+        label: 'accelerometer',
+        yAxisID: 'accelerometer',
         borderColor: "rgba(255, 204, 0, 1)",
         pointBoarderColor: "rgba(255, 204, 0, 1)",
         backgroundColor: "rgba(255, 204, 0, 0.4)",
         pointHoverBackgroundColor: "rgba(255, 204, 0, 1)",
         pointHoverBorderColor: "rgba(255, 204, 0, 1)",
-        data: temperatureData
+        data: accelerometerData
       },
       {
         fill: false,
-        label: 'Humidity',
-        yAxisID: 'Humidity',
+        label: 'gyroscope',
+        yAxisID: 'gyroscope',
         borderColor: "rgba(24, 120, 240, 1)",
         pointBoarderColor: "rgba(24, 120, 240, 1)",
         backgroundColor: "rgba(24, 120, 240, 0.4)",
         pointHoverBackgroundColor: "rgba(24, 120, 240, 1)",
         pointHoverBorderColor: "rgba(24, 120, 240, 1)",
-        data: humidityData
+        data: gyroscopeData
       }
     ]
   }
@@ -33,23 +33,23 @@ $(document).ready(function () {
   var basicOption = {
     title: {
       display: true,
-      text: 'Temperature & Humidity Real-time Data',
+      text: 'accelerometer & gyroscope Real-time Data',
       fontSize: 36
     },
     scales: {
       yAxes: [{
-        id: 'Temperature',
+        id: 'accelerometer',
         type: 'linear',
         scaleLabel: {
-          labelString: 'Temperature(C)',
+          labelString: 'accelerometer(C)',
           display: true
         },
         position: 'left',
       }, {
-          id: 'Humidity',
+          id: 'gyroscope',
           type: 'linear',
           scaleLabel: {
-            labelString: 'Humidity(%)',
+            labelString: 'gyroscope(%)',
             display: true
           },
           position: 'right'
@@ -74,24 +74,24 @@ $(document).ready(function () {
     console.log('receive message' + message.data);
     try {
       var obj = JSON.parse(message.data);
-      if(!obj.time || !obj.temperature) {
+      if(!obj.time || !obj.accelerometer) {
         return;
       }
       timeData.push(obj.time);
-      temperatureData.push(obj.temperature);
+      accelerometerData.push(obj.accelerometer);
       // only keep no more than 50 points in the line chart
       const maxLen = 50;
       var len = timeData.length;
       if (len > maxLen) {
         timeData.shift();
-        temperatureData.shift();
+        accelerometerData.shift();
       }
 
-      if (obj.humidity) {
-        humidityData.push(obj.humidity);
+      if (obj.gyroscope) {
+        gyroscopeData.push(obj.gyroscope);
       }
-      if (humidityData.length > maxLen) {
-        humidityData.shift();
+      if (gyroscopeData.length > maxLen) {
+        gyroscopeData.shift();
       }
 
       myLineChart.update();
